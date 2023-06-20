@@ -5,7 +5,6 @@ import css from './Modal.module.css';
 export class Modal extends React.Component {
     static propTypes = {
         onClose: PropTypes.func.isRequired,
-        children: PropTypes.node.isRequired,
     };  
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);

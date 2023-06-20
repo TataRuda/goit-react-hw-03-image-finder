@@ -1,32 +1,27 @@
 import PropTypes from 'prop-types'; 
-import React from 'react';
+import React, { useState } from 'react';
 import css from './Seacrhbar.module.css';
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export class Searchbar extends React.Component {
- state = {
-    query: '',
- }
- 
- handleChange = e => {
-    const { value } = e.target;
-    this.setState({ query: value });
- };
- handleSubmit = e => {
+export const Searchbar = ({onSubmit}) => {
+// hook useState create query and func setQuery (update value of query) 
+  const [query, setQuery] = useState('');
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onSubmit(this.state.query);
- };
- render () {
-    const {  query } = this.state;
-    return (<div >
-    <form className={css.searchform} onSubmit={this.handleSubmit}>
+    onSubmit(query);
+    setQuery('');
+  };
+   return (<div>
+    <form className={css.searchform} onSubmit={handleSubmit}>
       <button className={css.searchformButton} type="submit" >
-        <span className={css.searchformButtonLabel}>Search</span>
+      <FontAwesomeIcon icon={faSearch} />
       </button>
-  
-      <input className={css.searchformInput}
-        name="query"
+        <input className={css.searchformInput}
         value={query}
-        onChange={this.handleChange}
+        onChange={(e) => setQuery(e.target.value)}
+        name="query"
         type="text"
         autoComplete="off"
         autoFocus
@@ -34,13 +29,8 @@ export class Searchbar extends React.Component {
       />
     </form>
   </div>
-
-    )
+   )
  }
-
-
- 
-}
 
 Searchbar.propTypes = {
     onSubmit: PropTypes.func,
