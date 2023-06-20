@@ -21,10 +21,10 @@ export class App extends React.Component {
   };
   
   componentDidUpdate( prevProps, prevState) {
-    const { page } = this.state;
+    const { query, page } = this.state;
     // if query or page are changed then load images with new search options.
     if (prevState.query !== this.state.query || (prevState.page !== page && page !== 1)) {
-      this.fetchImages()
+      this.fetchImages(query, page)
     };
   }; 
 
@@ -46,7 +46,7 @@ export class App extends React.Component {
               };
           });
           this.setState(({searchResults}) => ({
-            searchResults: [...searchResults, ...data],
+            searchResults: [...searchResults,...data],
           }));
         })
         .catch((error) => {
@@ -70,11 +70,9 @@ export class App extends React.Component {
   };   
    
   loadMoreImages = (e) => {
-    e.preventDefault();
-    this.setState((prevState) => ({
-    page: prevState.page + 1
-    }),
-    );
+    this.setState(prevState => {
+      return { page: prevState.page + 1 };
+    });
   };
 
   toggleModal = (largeImageURL) => {
