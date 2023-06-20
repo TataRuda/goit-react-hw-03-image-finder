@@ -13,7 +13,7 @@ export const Searchbar = ({onSubmit}) => {
     onSubmit(query);
     setQuery('');
   };
-   return (<div>
+   return (<div className={css.searchbar}>
     <form className={css.searchform} onSubmit={handleSubmit}>
       <button className={css.searchformButton} type="submit" >
       <FontAwesomeIcon icon={faSearch} />
