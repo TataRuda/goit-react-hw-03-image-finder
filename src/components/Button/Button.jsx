@@ -9,6 +9,6 @@ export const Button = ({onClick}) => {
     )
 }
 
-Button.protoTypes = {
+Button.propTypes = {
     onClick: PropsTypes.func.isRequired,
 }

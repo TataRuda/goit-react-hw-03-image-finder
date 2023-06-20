@@ -19,7 +19,7 @@ export class App extends React.Component {
     largeImageURL: null,
     isLoading: false, 
   };
-
+  
   componentDidUpdate( prevProps, prevState) {
     const { page } = this.state;
     // if query or page are changed then load images with new search options.
@@ -47,17 +47,18 @@ export class App extends React.Component {
           });
           this.setState(({searchResults}) => ({
             searchResults: [...searchResults, ...data],
-            isLoading: false
           }));
         })
         .catch((error) => {
           console.log('Error fetching images:', error);
-          this.setState({ isLoading: false });
           toast.error('Error fetching images', {
             position: toast.POSITION.TOP_RIGHT
           });
         })
-    }
+        .finally(() => {
+          this.setState({ isLoading: false });
+        });
+    };
   
   handleSearchSubmit =  (query)  => {
     if (query === this.state.query) return;
@@ -68,10 +69,12 @@ export class App extends React.Component {
     this.setState({ query: e.target.value });
   };   
    
-  loadMoreImages = () => {
-    this.setState(
-      (prevState) => ({page: prevState.page + 1}),
-      );
+  loadMoreImages = (e) => {
+    e.preventDefault();
+    this.setState((prevState) => ({
+    page: prevState.page + 1
+    }),
+    );
   };
 
   toggleModal = (largeImageURL) => {
