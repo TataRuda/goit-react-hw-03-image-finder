@@ -20,64 +20,58 @@ export class App extends React.Component {
     isLoading: false, 
   };
 
+  componentDidUpdate( prevProps, prevState) {
+    const { page } = this.state;
+    // if query or page are changed then load images with new search options.
+    if (prevState.query !== this.state.query || (prevState.page !== page && page !== 1)) {
+      this.fetchImages()
+    };
+  }; 
+
+  fetchImages = () => {
+      const { query, page } = this.state;
+      this.setState({ isLoading: true });
+      fetchData (query, page)
+        .then(({hits}) => {
+          if (hits.length === 0) {
+            toast.warn('Oops! No results for your query',  {
+              position: toast.POSITION.TOP_LEFT
+            });
+          };
+          const data = hits.map(({ id, webformatURL, largeImageURL }) => {
+            return {
+              id,
+              webformatURL,
+              largeImageURL,
+              };
+          });
+          this.setState(({searchResults}) => ({
+            searchResults: [...searchResults, ...data],
+            isLoading: false
+          }));
+        })
+        .catch((error) => {
+          console.log('Error fetching images:', error);
+          this.setState({ isLoading: false });
+          toast.error('Error fetching images', {
+            position: toast.POSITION.TOP_RIGHT
+          });
+        })
+    }
+  
   handleSearchSubmit =  (query)  => {
     if (query === this.state.query) return;
-    this.setState({searchResults:[], query, isLoading: true }, () => {
-      this.fetchImages(query);
-    });
+    this.setState({searchResults:[], query, isLoading: true });
   };
 
   handleInputChange = (e) => {
     this.setState({ query: e.target.value });
-  };
-
-  /*componentDidUpdate( prevProps, prevState) {
-    const prevQuery = prevState.query;
-    const nextQuery = this.state.query;
-    const { page } = this.state;
-    // if query or page are changed then load images with new search options.
-    if (prevQuery !== nextQuery || (prevState.page !== page && page !== 1)) {
-      this.fetchImages()};
-  };*/
-    
-  fetchImages = () => {
-    const { query, page } = this.state;
-    this.setState({ isLoading: true });
-    fetchData (query, page)
-      .then(({hits}) => {
-        if (hits.length === 0) {
-          toast.warn('Oops! No results for your query',  {
-            position: toast.POSITION.TOP_LEFT
-          });
-        };
-        const data = hits.map(({ id, webformatURL, largeImageURL }) => {
-          return {
-            id,
-            webformatURL,
-            largeImageURL,
-            };
-        });
-        this.setState(({searchResults}) => ({
-          searchResults: [...searchResults, ...data],
-          isLoading: false
-        }));
-      })
-      .catch((error) => {
-        console.log('Error fetching images:', error);
-        this.setState({ isLoading: false });
-        toast.error('Error fetching images', {
-          position: toast.POSITION.TOP_RIGHT
-        });
-      })
-  }
-    
+  };   
+   
   loadMoreImages = () => {
     this.setState(
       (prevState) => ({page: prevState.page + 1}),
-      () => {
-        this.fetchImages(this.state.query);
-      }
-    );
+      );
   };
 
   toggleModal = (largeImageURL) => {
