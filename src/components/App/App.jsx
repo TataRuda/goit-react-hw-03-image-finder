@@ -89,14 +89,16 @@ export class App extends React.Component {
     return (
     <div className={css.containerApp}>
       <Searchbar onSubmit={this.handleSearchSubmit} value={query} onChange={this.handleInputChange}/>
-      {isLoading ? (<Loader/>) :
-      (<ImageGallery searchResults={searchResults} onClick={this.toggleModal}/>)}
+      {searchResults.length !== 0 && <ImageGallery searchResults={searchResults} onClick={this.toggleModal}/>}
+      {isLoading === true && <Loader/>}
+
       {showModal && (
           <Modal onClose={this.toggleModal} largeImageURL={largeImageURL}/>
         )}
       {showLoadMoreButton && 
         (<Button onClick={this.loadMoreImages}/>)}
-      <ToastContainer />    
+      <ToastContainer /> 
+         
     </div>
   );
 }
